@@ -1,4 +1,4 @@
-import { Ingredient } from "../redux/store";
+import { Ingredient } from "../redux/features/mealSlice";
 
 export const MOCKED_INGREDIENTS: Ingredient[] = [
   {
