@@ -1,0 +1,35 @@
+export default {
+  colors: {
+    primary: "#009D4F",
+    primaryLight: "#62B349",
+    success: "#009D4F",
+    white: "#FFFFFF",
+    background: "##BDBDBE",
+    backgroundDark: "#272627",
+    black: "#010104",
+    gray: "#6E6C6F",
+    lightGray: "#ECE8ED",
+    veryLightGray: "#F8F8F8",
+    error: "#ED4E4E",
+  },
+  /*
+  fonts: {
+    blackItalic: "SFProDisplayBlackltalic",
+    bold: "SFProDisplayBold",
+    boldItalic: "SFProDisplayBoldItalic",
+    heavy: "SFProDisplayHeavy",
+    heavyItalic: "SFProDisplayHeavyltalic",
+    light: "SFProDisplayLight",
+    lightItalic: "SFProDisplayLightitalic",
+    medium: "SFProDisplayMedium",
+    mediumItalic: "SFProDisplayMediumItalic",
+    regular: "SFProDisplayRegular",
+    regularItalic: "SFProDisplayRegularltalic",
+    semibold: "SFProDisplaySemibold",
+    semiboldItalic: "SFProDisplaySemiboldItalic",
+    thin: "SFProDisplayThin",
+    thinItalic: "SFProDisplayThinltalic",
+    ultralight: "SFProDisplayUltralight",
+    ultralightItalic: "SFProDisplayUltralightitalic",
+  },*/
+};
