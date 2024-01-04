@@ -4,16 +4,19 @@ import App from "./App.tsx";
 import { ThemeProvider } from "styled-components";
 import theme from "./global/theme.ts";
 import { Provider } from "react-redux";
-import { store } from "./redux/store/index.tsx";
+import { persistor, store } from "./redux/store/index.tsx";
 import GlobalStyles from "./global/styles.ts";
+import { PersistGate } from "redux-persist/integration/react";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        <App />
-      </ThemeProvider>
+      <PersistGate persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles />
+          <App />
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );

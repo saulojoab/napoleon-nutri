@@ -4,7 +4,9 @@ import { Ingredient, MealProps, addMeal } from "@/redux/features/mealSlice";
 import { Modal } from "@mui/material";
 import { useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { FaTimes, FaTrash, FaPen, FaUtensils, FaPlus } from "react-icons/fa";
 import styled from "styled-components";
+import MacroNutrientsContainer from "../MacroNutrientsContainer";
 
 interface MealCreationFormProps {
   modalIsOpen: boolean;
@@ -24,7 +26,7 @@ export default function MealCreationForm({
   toggleModal,
 }: MealCreationFormProps) {
   const dispatch = useAppDispatch();
-  const { register, control, handleSubmit, watch } = useForm({
+  const { register, control, handleSubmit, watch, reset } = useForm({
     defaultValues: {
       name: "",
       ingredients: [
@@ -83,9 +85,11 @@ export default function MealCreationForm({
         )!,
         quantity: item.quantity,
       })),
+      createdAt: new Date(),
     };
 
     dispatch(addMeal(parsedMeal));
+    reset();
   }
 
   return (
@@ -93,15 +97,27 @@ export default function MealCreationForm({
       <Container>
         <ModalTitleAndCloseButtonContainer>
           <ModalTitle>Criar Refeição</ModalTitle>
-          <CloseButton onClick={toggleModal}>X</CloseButton>
+          <CloseButton onClick={toggleModal}>
+            <FaTimes size={25} />
+          </CloseButton>
         </ModalTitleAndCloseButtonContainer>
+
         <Form onSubmit={handleSubmit((data) => addMealToList(data))}>
           <TextInputWithLabel>
-            <Label htmlFor="name">Nome da Refeição</Label>
-            <TextInput {...register("name")} />
+            <Label htmlFor="name">
+              <FaPen /> Nome da Refeição
+            </Label>
+            <TextInput
+              placeholder="Ex: Almoço do Pedro"
+              {...register("name")}
+            />
           </TextInputWithLabel>
+
           <br />
-          <Label>Lista de Ingredientes</Label>
+
+          <Label>
+            <FaUtensils /> Lista de Ingredientes
+          </Label>
 
           {fields.map((item, index) => {
             return (
@@ -112,17 +128,22 @@ export default function MealCreationForm({
                   })}
                   defaultValue={item.ingredient}
                 >
+                  <option value={-1} disabled>
+                    Selecione um ingrediente
+                  </option>
                   {MOCKED_INGREDIENTS.map((ingredient) => (
                     <option key={ingredient.id} value={ingredient.id}>
                       {ingredient.name}
                     </option>
                   ))}
                 </Select>
+
                 <TextInput
                   {...register(`ingredients.${index}.quantity`)}
                   type="number"
                   defaultValue={item.quantity}
                 />
+
                 <UnitOfMeasurement>
                   {MOCKED_INGREDIENTS.find(
                     (ing) =>
@@ -131,8 +152,9 @@ export default function MealCreationForm({
                     ? "Gramas"
                     : "Unidade"}
                 </UnitOfMeasurement>
+
                 <DeleteButton type="button" onClick={() => remove(index)}>
-                  Apagar
+                  <FaTrash size={18} />
                 </DeleteButton>
               </IngredientAndQuantityContainer>
             );
@@ -143,33 +165,11 @@ export default function MealCreationForm({
               append({ ingredient: -1, quantity: 0 });
             }}
           >
-            Adicionar Novo Ingrediente
+            <FaPlus /> Adicionar Novo Ingrediente
           </AddNewIngredientButton>
           <br />
-          <MacroNutrientsContainer>
-            <Macro>
-              <MacroTitle>Proteínas: </MacroTitle>
-              <MacroValue>
-                {calculateMacros().totalProteins.toFixed(2)}g
-              </MacroValue>
-            </Macro>
-            <Macro>
-              <MacroTitle>Carboidratos: </MacroTitle>
-              <MacroValue>
-                {calculateMacros().totalCarbs.toFixed(2)}g
-              </MacroValue>
-            </Macro>
-            <Macro>
-              <MacroTitle>Gorduras: </MacroTitle>
-              <MacroValue>{calculateMacros().totalFats.toFixed(2)}g</MacroValue>
-            </Macro>
-            <Macro>
-              <MacroTitle>Calorias: </MacroTitle>
-              <MacroValue>
-                {calculateMacros().totalCalories.toFixed(2)}kcal
-              </MacroValue>
-            </Macro>
-          </MacroNutrientsContainer>
+          <br />
+          <MacroNutrientsContainer macros={calculateMacros()} />
           <SubmitButton type="submit">Criar Refeição</SubmitButton>
         </Form>
       </Container>
@@ -191,6 +191,10 @@ const Container = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  overflow: scroll;
+  max-height: 80%;
+
+  transition: all 0.2s ease-in-out;
 `;
 
 const TextInputWithLabel = styled.div`
@@ -206,10 +210,13 @@ const TextInput = styled.input`
   margin: 5px;
   width: 100%;
   color: ${({ theme }) => theme.colors.primary};
-  height: 30px;
+  height: 40px;
   font-size: 16px;
   background-color: ${({ theme }) => theme.colors.white};
   width: 100%;
+  ::placeholder {
+    color: ${({ theme }) => theme.colors.veryLightGray};
+  }
 `;
 
 const Select = styled.select`
@@ -231,11 +238,12 @@ const DeleteButton = styled.button`
   margin: 5px;
   margin-left: 40px;
   transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.white};
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.error};
-    border: 1px solid ${({ theme }) => theme.colors.error};
   }
 `;
 
@@ -246,10 +254,15 @@ const AddNewIngredientButton = styled.button`
   margin: 5px;
   margin-top: 20px;
   transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 16px;
+  font-weight: 600;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
     border: 1px solid ${({ theme }) => theme.colors.white};
+    box-shadow: 0px 0px 5px 0px ${({ theme }) => theme.colors.white};
   }
 `;
 
@@ -270,11 +283,18 @@ const SubmitButton = styled.button`
   margin: 5px;
   background-color: ${({ theme }) => theme.colors.success};
   transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 16px;
+  font-weight: 600;
+  width: 50%;
+  align-self: center;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.success};
     border: 1px solid ${({ theme }) => theme.colors.success};
+    box-shadow: 0px 0px 5px 0px ${({ theme }) => theme.colors.white};
   }
 `;
 
@@ -282,32 +302,10 @@ const UnitOfMeasurement = styled.span`
   color: ${({ theme }) => theme.colors.white};
 `;
 
-const MacroNutrientsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-`;
-
-const Macro = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 5px;
-  margin: 5px;
-`;
-
-const MacroTitle = styled.span`
-  color: ${({ theme }) => theme.colors.white};
-  font-weight: bold;
-`;
-
-const MacroValue = styled.span`
-  color: ${({ theme }) => theme.colors.white};
-`;
-
 const Label = styled.label`
   color: ${({ theme }) => theme.colors.white};
+  align-self: flex-start;
+  font-weight: 400;
 `;
 
 const ModalTitleAndCloseButtonContainer = styled.div`
@@ -322,17 +320,21 @@ const ModalTitleAndCloseButtonContainer = styled.div`
 const ModalTitle = styled.span`
   color: ${({ theme }) => theme.colors.white};
   font-size: 24px;
+  font-weight: bold;
+  font-style: italic;
 `;
 
 const CloseButton = styled.button`
-  background-color: ${({ theme }) => theme.colors.error};
+  background-color: transparent;
+  border: none;
   border-radius: 5px;
-  padding: 10px;
+  padding: 5px;
   transition: all 0.2s ease-in-out;
+  color: ${({ theme }) => theme.colors.white};
+  cursor: pointer;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.error};
-    border: 1px solid ${({ theme }) => theme.colors.error};
   }
 `;

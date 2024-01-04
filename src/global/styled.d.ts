@@ -1,9 +1,9 @@
 import "styled-components";
-import { StyledBreakpointsTheme } from "styled-breakpoints";
+import { DefaultTheme } from "styled-components";
 
 import theme from "./theme";
 
-export type ITheme = typeof theme & StyledBreakpointsTheme;
+export type ITheme = typeof theme & DefaultTheme;
 
 declare module "styled-components" {
   export interface DefaultTheme extends ITheme {}
