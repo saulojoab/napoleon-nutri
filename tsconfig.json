@@ -27,7 +27,9 @@
       "@/pages/*": ["./pages/*"],
       "@/containers/*": ["./containers/*"],
       "@/global/*": ["./global/*"],
-      "@/services/*": ["./services/*"]
+      "@/services/*": ["./services/*"],
+      "@/mocks/*": ["./__mocks__/*"],
+      "@/hooks/*": ["./hooks/*"]
     }
   },
   "include": ["src"],
