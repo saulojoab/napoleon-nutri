@@ -92,6 +92,20 @@ export default function MealCreationForm({
     reset();
   }
 
+  const isDisabled = useMemo(() => {
+    const hasEmptyIngredient = watchAllFields.ingredients.some(
+      (item) => item.ingredient == -1
+    );
+
+    const hasEmptyQuantity = watchAllFields.ingredients.some(
+      (item) => item.quantity == 0
+    );
+
+    const hasEmptyName = watchAllFields.name == "";
+
+    return hasEmptyIngredient || hasEmptyQuantity || hasEmptyName;
+  }, [watchAllFields]);
+
   return (
     <Modal open={modalIsOpen} onClose={toggleModal}>
       <Container>
@@ -169,8 +183,11 @@ export default function MealCreationForm({
           </AddNewIngredientButton>
           <br />
           <br />
+
           <MacroNutrientsContainer macros={calculateMacros()} />
-          <SubmitButton type="submit">Criar Refeição</SubmitButton>
+          <SubmitButton disabled={isDisabled} type="submit">
+            Criar Refeição
+          </SubmitButton>
         </Form>
       </Container>
     </Modal>
@@ -193,6 +210,7 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
   overflow: scroll;
   max-height: 80%;
+  max-width: 100%;
 
   transition: all 0.2s ease-in-out;
 `;
@@ -258,6 +276,11 @@ const AddNewIngredientButton = styled.button`
   color: ${({ theme }) => theme.colors.white};
   font-size: 16px;
   font-weight: 600;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
@@ -275,6 +298,7 @@ const IngredientAndQuantityContainer = styled.div`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 const SubmitButton = styled.button`
@@ -289,6 +313,11 @@ const SubmitButton = styled.button`
   font-weight: 600;
   width: 50%;
   align-self: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.white};

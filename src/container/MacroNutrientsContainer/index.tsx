@@ -39,6 +39,11 @@ const Container = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+
+  // change to column on mobile
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const Macro = styled.div`

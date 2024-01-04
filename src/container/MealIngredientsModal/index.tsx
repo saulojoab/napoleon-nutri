@@ -81,6 +81,7 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
   overflow: scroll;
   max-height: 80%;
+  max-width: 100%;
 
   transition: all 0.2s ease-in-out;
 `;
@@ -149,6 +150,11 @@ const IngredientQuantityLabels = styled.div`
   border-radius: 5px;
   width: 100%;
   color: ${({ theme }) => theme.colors.white};
+
+  // change font-size on mobile
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const IngredientLabel = styled.span`
